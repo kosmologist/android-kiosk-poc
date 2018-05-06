@@ -11,34 +11,44 @@
 
     <TextView
         android:id="@+id/tvStatus"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Device Status: Default" />
+        android:layout_centerInParent="true"
+        android:text="Device Status: Default"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvInstructions"
-        android:gravity="center"
-        android:padding="15dp"
-        android:textColor="@color/white"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvStatus"
-        android:text="@string/device_owner_setup"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="@string/device_owner_setup"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
-        android:textColor="@color/white"
         android:layout_below="@+id/tvInstructions"
         android:layout_centerHorizontal="true"
-        android:background="?android:selectableItemBackground"/>
+        android:background="?android:selectableItemBackground"
+        android:text="Next"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:padding="20dp"
+        android:text="version 1.0.0"
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>

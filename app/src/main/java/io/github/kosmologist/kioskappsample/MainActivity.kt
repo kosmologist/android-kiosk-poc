@@ -11,6 +11,7 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         tvStatus.text = if (isDeviceOwner()) "Status: Device Owner"
         else "Status: Device Unprovisioned"
+        tvVersion.text = BuildConfig.VERSION_NAME
         if (isDeviceOwner()){
             tvInstructions.text = resources.getText(R.string.device_owner_removal)
         }

@@ -106,14 +106,14 @@ open abstract class BaseActivity : AppCompatActivity() {
     private fun onAppUpdate(){
         Log.d("KIOSK","Checking for Updates...")
         Toast.makeText(this,"Checking for Updates", Toast.LENGTH_SHORT).show()
-        // https://github.com/kosmologist/kiosksample/releases/download/1.0.1/kiosksample_1_0_1.apk
-        val destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"
-        val apkName = destination + "Kiosk.apk"
+        var destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"
+        val apkName = "app-debug.apk"
+        destination += apkName
         val destinationUri = Uri.parse("file://" + destination)
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Kiosk.apk")
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"app-debug.apk")
         if (file.exists()) file.delete()
 
-        val request = DownloadManager.Request(Uri.parse("https://github.com/kosmologist/kiosksample/releases/download/1.0.1/kiosksample_1_0_1.apk"))
+        val request = DownloadManager.Request(Uri.parse("https://github.com/kosmologist/kiosksample/releases/download/1.0.1/app-debug.apk"))
         request.setDescription("Downloading KioskSample App Update...")
         request.setTitle("Kiosk App Update")
         request.setDestinationUri(destinationUri)
@@ -123,7 +123,7 @@ open abstract class BaseActivity : AppCompatActivity() {
         val onComplete = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val toInstall = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                        "Kiosk.apk")
+                        "app-debug.apk")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     val apkUri = FileProvider.getUriForFile(this@BaseActivity, "kiosk.provider", toInstall)
                     val inst = Intent(Intent.ACTION_INSTALL_PACKAGE)
@@ -138,9 +138,6 @@ open abstract class BaseActivity : AppCompatActivity() {
                     //inst.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(inst)
                 }
-
-                val sp = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                sp.edit().putBoolean("pref_kiosk_mode", false).commit()
                 unregisterReceiver(this)
             }
         }
