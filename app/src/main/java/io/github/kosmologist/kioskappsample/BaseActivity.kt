@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -18,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import java.io.File
+import java.io.FileInputStream
 
 
 open abstract class BaseActivity : AppCompatActivity() {
@@ -34,6 +34,14 @@ open abstract class BaseActivity : AppCompatActivity() {
         packageManager.setComponentEnabledSetting(ComponentName(this.applicationContext,
                 getActivityClass()), PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP)
+
+        val updateReceiver = object : BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Log.i("KIOSK","App Update Sequence Completed")
+                unregisterReceiver(this)
+            }
+        }
+        registerReceiver(updateReceiver,IntentFilter("GO_TO_HELL"))
     }
 
     override fun onStart() {
@@ -111,22 +119,25 @@ open abstract class BaseActivity : AppCompatActivity() {
 
         val onComplete = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val toInstall = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                        "app-debug.apk")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    val apkUri = FileProvider.getUriForFile(this@BaseActivity, "kiosk.provider", toInstall)
-                    val inst = Intent(Intent.ACTION_INSTALL_PACKAGE)
-                    inst.data = apkUri
-                    inst.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    //inst.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(inst)
-                } else {
-                    val apkUri = Uri.fromFile(toInstall)
-                    val inst = Intent(Intent.ACTION_VIEW)
-                    inst.setDataAndType(apkUri, "application/vnd.android.package-archive")
-                    //inst.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(inst)
-                }
+//                val toInstall = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+//                        "app-debug.apk")
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    val apkUri = FileProvider.getUriForFile(this@BaseActivity, "kiosk.provider", toInstall)
+//                    val inst = Intent(Intent.ACTION_INSTALL_PACKAGE)
+//                    inst.data = apkUri
+//                    inst.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                    //inst.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(inst)
+//                } else {
+//                    val apkUri = Uri.fromFile(toInstall)
+//                    val installIntent = Intent(Intent.ACTION_VIEW)
+//                    installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive")
+//                    //inst.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(installIntent)
+//                }
+                val apkFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"app-debug.apk")
+                val fileInputStream = FileInputStream(apkFile)
+                UpdateUtil.installPackage(this@BaseActivity.applicationContext,fileInputStream,"io.github.kosmologist.kioskappsample")
                 unregisterReceiver(this)
             }
         }
@@ -256,5 +267,4 @@ open abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun isDeviceOwner(): Boolean = devicePolicyManager.isDeviceOwnerApp(packageName)
-
 }
