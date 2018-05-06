@@ -12,11 +12,11 @@ class MainActivity : BaseActivity() {
         tvStatus.text = if (isDeviceOwner()) "Status: Device Owner"
         else "Status: Device Unprovisioned"
         tvVersion.text = BuildConfig.VERSION_NAME
-        if (isDeviceOwner()){
+        if (isDeviceOwner()) {
             tvInstructions.text = resources.getText(R.string.device_owner_removal)
         }
         btnNext.setOnClickListener {
-            startActivity(Intent(this@MainActivity,NextActivity::class.java))
+            startActivity(Intent(this@MainActivity, NextActivity::class.java))
         }
     }
 

@@ -1,34 +1,23 @@
 package io.github.kosmologist.kioskappsample
 
+import android.app.ActivityManager
+import android.app.DownloadManager
 import android.app.admin.DevicePolicyManager
+import android.app.admin.SystemUpdatePolicy
+import android.content.*
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.*
+import android.provider.Settings
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import android.app.ActivityManager
-import android.app.DownloadManager
-import android.app.admin.SystemUpdatePolicy
-import android.content.*
-import android.net.Uri
-import android.os.*
-import android.provider.Settings
-import android.util.Log
 import java.io.File
-import android.system.Os.link
-import android.R.id.edit
-import android.preference.PreferenceManager
-import android.content.SharedPreferences
-import android.content.Intent
-import android.support.v4.content.FileProvider
-import android.os.Build
-import android.os.Environment.DIRECTORY_DOWNLOADS
-import android.os.Environment.getExternalStoragePublicDirectory
-import android.content.BroadcastReceiver
-
-
 
 
 open abstract class BaseActivity : AppCompatActivity() {
@@ -103,14 +92,14 @@ open abstract class BaseActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onAppUpdate(){
-        Log.d("KIOSK","Checking for Updates...")
-        Toast.makeText(this,"Checking for Updates", Toast.LENGTH_SHORT).show()
+    private fun onAppUpdate() {
+        Log.d("KIOSK", "Checking for Updates...")
+        Toast.makeText(this, "Checking for Updates", Toast.LENGTH_SHORT).show()
         var destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"
         val apkName = "app-debug.apk"
         destination += apkName
         val destinationUri = Uri.parse("file://" + destination)
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"app-debug.apk")
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "app-debug.apk")
         if (file.exists()) file.delete()
 
         val request = DownloadManager.Request(Uri.parse("https://github.com/kosmologist/kiosksample/releases/download/1.0.1/app-debug.apk"))
