@@ -1,10 +1,7 @@
 package io.github.kosmologist.kioskappsample
 
 import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
-import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -12,14 +9,26 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import android.app.ActivityManager
-import android.os.Build
-import android.os.BatteryManager
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.DownloadManager
 import android.app.admin.SystemUpdatePolicy
-import android.os.UserManager
+import android.content.*
+import android.net.Uri
+import android.os.*
 import android.provider.Settings
 import android.util.Log
+import java.io.File
+import android.system.Os.link
+import android.R.id.edit
+import android.preference.PreferenceManager
+import android.content.SharedPreferences
+import android.content.Intent
+import android.support.v4.content.FileProvider
+import android.os.Build
+import android.os.Environment.DIRECTORY_DOWNLOADS
+import android.os.Environment.getExternalStoragePublicDirectory
+import android.content.BroadcastReceiver
+
+
 
 
 open abstract class BaseActivity : AppCompatActivity() {
@@ -97,7 +106,45 @@ open abstract class BaseActivity : AppCompatActivity() {
     private fun onAppUpdate(){
         Log.d("KIOSK","Checking for Updates...")
         Toast.makeText(this,"Checking for Updates", Toast.LENGTH_SHORT).show()
-        
+        // https://github.com/kosmologist/kiosksample/releases/download/1.0.1/kiosksample_1_0_1.apk
+        val destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"
+        val apkName = destination + "Kiosk.apk"
+        val destinationUri = Uri.parse("file://" + destination)
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Kiosk.apk")
+        if (file.exists()) file.delete()
+
+        val request = DownloadManager.Request(Uri.parse("https://github.com/kosmologist/kiosksample/releases/download/1.0.1/kiosksample_1_0_1.apk"))
+        request.setDescription("Downloading KioskSample App Update...")
+        request.setTitle("Kiosk App Update")
+        request.setDestinationUri(destinationUri)
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadId = downloadManager.enqueue(request)
+
+        val onComplete = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val toInstall = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        "Kiosk.apk")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    val apkUri = FileProvider.getUriForFile(this@BaseActivity, "kiosk.provider", toInstall)
+                    val inst = Intent(Intent.ACTION_INSTALL_PACKAGE)
+                    inst.data = apkUri
+                    inst.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    //inst.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(inst)
+                } else {
+                    val apkUri = Uri.fromFile(toInstall)
+                    val inst = Intent(Intent.ACTION_VIEW)
+                    inst.setDataAndType(apkUri, "application/vnd.android.package-archive")
+                    //inst.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(inst)
+                }
+
+                val sp = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                sp.edit().putBoolean("pref_kiosk_mode", false).commit()
+                unregisterReceiver(this)
+            }
+        }
+        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private fun onToggleKioskMode() {
