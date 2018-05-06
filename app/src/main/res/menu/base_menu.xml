@@ -7,8 +7,14 @@
         android:title="Toggle Kiosk Mode"
         app:showAsAction="never"></item>
 
-    <item android:title="Remove Device Ownership"
-        app:showAsAction="never"
-        android:id="@+id/menu_remove_deviceOwnership"></item>
+    <item
+        android:id="@+id/menu_remove_deviceOwnership"
+        android:title="Remove Device Ownership"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/menu_update_app"
+        android:title="Update App"
+        app:showAsAction="never"></item>
 
 </menu>

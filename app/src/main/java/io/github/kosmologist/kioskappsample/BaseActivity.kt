@@ -87,11 +87,20 @@ open abstract class BaseActivity : AppCompatActivity() {
             R.id.menu_remove_deviceOwnership -> {
                 onRemoveDeviceOwnership()
             }
+            R.id.menu_update_app -> {
+                onAppUpdate()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun onToggleKioskMode() {
+    private fun onAppUpdate(){
+        Log.d("KIOSK","Checking for Updates...")
+        Toast.makeText(this,"Checking for Updates", Toast.LENGTH_SHORT).show()
+        
+    }
+
+    private fun onToggleKioskMode() {
         try {
             if (devicePolicyManager.isDeviceOwnerApp(packageName)) {
                 Prefs.toggleKioskMode(this)
