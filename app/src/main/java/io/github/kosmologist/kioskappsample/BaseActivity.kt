@@ -35,13 +35,16 @@ open abstract class BaseActivity : AppCompatActivity() {
                 getActivityClass()), PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP)
 
-        val updateReceiver = object : BroadcastReceiver(){
+        val updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                Log.i("KIOSK","App Update Sequence Completed")
+                Log.i("KIOSK", "App Update Sequence Completed")
+                val intent = Intent(this@BaseActivity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
                 unregisterReceiver(this)
             }
         }
-        registerReceiver(updateReceiver,IntentFilter("GO_TO_HELL"))
+        registerReceiver(updateReceiver, IntentFilter("GO_TO_HELL_PLEASE"))
     }
 
     override fun onStart() {
@@ -135,9 +138,9 @@ open abstract class BaseActivity : AppCompatActivity() {
 //                    //inst.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    startActivity(installIntent)
 //                }
-                val apkFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"app-debug.apk")
+                val apkFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "app-debug.apk")
                 val fileInputStream = FileInputStream(apkFile)
-                UpdateUtil.installPackage(this@BaseActivity.applicationContext,fileInputStream,"io.github.kosmologist.kioskappsample")
+                UpdateUtil.installPackage(this@BaseActivity.applicationContext, fileInputStream, "io.github.kosmologist.kioskappsample")
                 unregisterReceiver(this)
             }
         }
