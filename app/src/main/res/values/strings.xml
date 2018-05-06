@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">KioskAppSample</string>
+    <string name="device_owner_setup">To Provision Device as Device Owner, please use the following command: adb shell dpm set-device-owner io.github.kosmologist.kioskappsample/.DeviceAdministratorReceiver</string>
+    <string name="device_owner_removal">To Remove device ownership, use overflow menu option in app bar, also please dont revoke device ownership when in kiosk mode.</string>
 </resources>

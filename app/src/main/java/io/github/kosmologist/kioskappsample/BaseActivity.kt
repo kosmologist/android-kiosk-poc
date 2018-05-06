@@ -84,7 +84,7 @@ open abstract class BaseActivity : AppCompatActivity() {
             R.id.menu_toggle_kioskmode -> {
                 onToggleKioskMode()
             }
-            R.id.menu_remove_deviceOwnership->{
+            R.id.menu_remove_deviceOwnership -> {
                 onRemoveDeviceOwnership()
             }
         }
@@ -98,11 +98,11 @@ open abstract class BaseActivity : AppCompatActivity() {
                 if (Prefs.isKioskModeEnabled(this)) {
                     setDefaultCosuPolicies(true)
                     lockTask()
-                    Toast.makeText(this, "Toggled Kiosk Disabled", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Kiosk Enabled", Toast.LENGTH_LONG).show()
                 } else {
                     unlockTask()
                     setDefaultCosuPolicies(false)
-                    Toast.makeText(this, "Toggled Kiosk Enabled", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Kiosk Disabled", Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(this, "Current App is not set to be device owner," +
@@ -190,7 +190,7 @@ open abstract class BaseActivity : AppCompatActivity() {
     private fun enableStayOnWhilePluggedIn(enabled: Boolean) {
         if (enabled) {
             devicePolicyManager.setGlobalSetting(
-                       adminComponentName,
+                    adminComponentName,
                     Settings.Global.STAY_ON_WHILE_PLUGGED_IN,
                     Integer.toString(BatteryManager.BATTERY_PLUGGED_AC or
                             BatteryManager.BATTERY_PLUGGED_USB or
@@ -212,5 +212,7 @@ open abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
+
+    fun isDeviceOwner(): Boolean = devicePolicyManager.isDeviceOwnerApp(packageName)
 
 }
