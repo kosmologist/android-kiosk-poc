@@ -9,11 +9,12 @@ import android.content.Context
 /**
  * Created by kosmologist on 5/5/18.
  */
-class DeviceAdminReceiver : DeviceAdminReceiver() {
+class DeviceAdministratorReceiver : DeviceAdminReceiver() {
 
     companion object {
         fun getComponentName(context: Context): ComponentName {
-            return ComponentName(context.applicationContext, DeviceAdminReceiver::class.java)
+            return ComponentName(context.applicationContext,
+                    DeviceAdministratorReceiver::class.java)
         }
     }
 }
