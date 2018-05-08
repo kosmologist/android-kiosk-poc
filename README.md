@@ -1,7 +1,7 @@
 # Set up single-purpose devices  
-  ![alt text](https://github.com/kosmologist/kiosksample/raw/master/screenshots/preview.png)  
+  ![alt text](https://github.com/kosmologist/kiosksample/raw/master/screenshots/preview_fix.png)  
   
-  As an IT administrator, you can configure Android 6.0 Marshmallow and later devices as corporate-owned, single-use (COSU) devices. These are Android devices used for a single purpose, such as digital signage, ticket printing, point of sale, or inventory management. To use Android devices as COSU devices, you need to develop Android apps that your customers can manage.  
+  You can configure Android 6.0 Marshmallow and later devices as corporate-owned, single-use (COSU) devices. These are Android devices used for a single purpose, such as digital signage, ticket printing, point of sale, or inventory management. To use Android devices as COSU devices, you need to develop Android apps that your customers can manage.  
   
   See more here: https://developer.android.com/work/cosu
   
